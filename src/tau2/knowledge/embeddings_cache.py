@@ -621,15 +621,33 @@ def get_unique_embedder_configs_for_retrieval_configs(
         ),
         "openai_embeddings": ("openai", {"model": "text-embedding-3-large"}),
         "openai_embeddings_reranker": ("openai", {"model": "text-embedding-3-large"}),
-        "alltools": ("openai", {"model": "text-embedding-3-large"}),
-        "AllTools": ("openai", {"model": "text-embedding-3-large"}),
-        "alltools_qwen": ("openrouter", {"model": "qwen3-embedding-8b"}),
     }
 
+    retrieval_config_kwargs = retrieval_config_kwargs or {}
     seen = set()
     unique_configs = []
 
     for config_name in retrieval_config_names:
+        if config_name in {"alltools", "AllTools"}:
+            from tau2.domains.banking_knowledge.retrieval import (
+                resolve_alltools_dense_embedding,
+            )
+
+            embedder_type, model = resolve_alltools_dense_embedding(
+                dense_embedding_provider=retrieval_config_kwargs.get(
+                    "dense_embedding_provider"
+                ),
+                dense_embedding_model=retrieval_config_kwargs.get(
+                    "dense_embedding_model"
+                ),
+            )
+            config = (embedder_type, {"model": model})
+            key = (config[0], json.dumps(config[1], sort_keys=True))
+            if key not in seen:
+                seen.add(key)
+                unique_configs.append(config)
+            continue
+
         if config_name in CONFIG_EMBEDDERS:
             config = CONFIG_EMBEDDERS[config_name]
             key = (config[0], json.dumps(config[1], sort_keys=True))

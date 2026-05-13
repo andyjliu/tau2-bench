@@ -57,8 +57,8 @@ tau2 run \
 | `--timeout` | Maximum wallclock time in seconds per simulation (no timeout by default) |
 | `--audio-native` | Enable audio native mode (voice full-duplex) |
 | `--audio-taps` | Save WAV files at each pipeline stage for debugging (requires `--audio-native`) |
-| `--retrieval-config` | Retrieval configuration for `banking_knowledge` domain (e.g., `alltools`, `alltools_qwen`, `bm25`, `terminal_use`) |
-| `--retrieval-config-kwargs` | JSON arguments for the retrieval config constructor (e.g., `'{"top_k": 10}'`) |
+| `--retrieval-config` | Retrieval configuration for `banking_knowledge` domain (e.g., `alltools`, `bm25`, `terminal_use`) |
+| `--retrieval-config-kwargs` | JSON arguments for the retrieval config constructor (e.g., `'{"top_k": 10}'` or `'{"dense_embedding_provider": "openrouter"}'` for `alltools`) |
 
 ### Audio Native Options
 
