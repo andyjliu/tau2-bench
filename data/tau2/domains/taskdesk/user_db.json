@@ -1,0 +1,10 @@
+{
+  "notifications": {
+    "notif_1": {
+      "notification_id": "notif_1",
+      "message": "Task 'Plan team offsite' has been assigned to you.",
+      "status": "unread",
+      "task_id": "task_3"
+    }
+  }
+}

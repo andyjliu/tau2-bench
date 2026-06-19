@@ -1,0 +1,272 @@
+[
+  {
+    "id": "create_task_for_user",
+    "description": {
+      "purpose": "Create a new task for an existing user.",
+      "notes": "Basic create_task happy path."
+    },
+    "user_scenario": {
+      "persona": "Professional and direct communicator who writes concisely.",
+      "instructions": "You manage IT operations. Ask the agent to create a new task titled 'Renew SSL certificate' for user_2."
+    },
+    "ticket": "Create a task titled 'Renew SSL certificate' for user_2.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "create_1",
+          "name": "create_task",
+          "arguments": { "user_id": "user_2", "title": "Renew SSL certificate" },
+          "info": "Create the SSL renewal task for user_2."
+        }
+      ],
+      "nl_assertions": [
+        "The agent confirmed the task was created successfully."
+      ],
+      "reward_basis": ["DB", "ACTION"]
+    }
+  },
+  {
+    "id": "create_task_with_description",
+    "description": {
+      "purpose": "Create a task with a description for an existing user.",
+      "notes": "Exercises the optional description argument."
+    },
+    "user_scenario": {
+      "persona": "Detail-oriented communicator.",
+      "instructions": "Ask the agent to create a task titled 'Security audit' with the description 'Annual security audit' for user_1."
+    },
+    "ticket": "Create a task 'Security audit' with description 'Annual security audit' for user_1.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "create_1",
+          "name": "create_task",
+          "arguments": {
+            "user_id": "user_1",
+            "title": "Security audit",
+            "description": "Annual security audit"
+          },
+          "info": "Create the security audit task with a description for user_1."
+        }
+      ],
+      "nl_assertions": [
+        "The agent confirmed the task was created successfully."
+      ],
+      "reward_basis": ["DB", "ACTION"]
+    }
+  },
+  {
+    "id": "complete_pending_task",
+    "description": {
+      "purpose": "Mark a pending task as completed.",
+      "notes": "Basic update_task_status happy path."
+    },
+    "user_scenario": {
+      "persona": "Busy professional.",
+      "instructions": "You just finished your quarterly report (task_1). Ask the agent to mark task_1 as completed."
+    },
+    "ticket": "Mark task_1 as completed.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "update_1",
+          "name": "update_task_status",
+          "arguments": { "task_id": "task_1", "status": "completed" },
+          "info": "Mark task_1 as completed."
+        }
+      ],
+      "nl_assertions": [
+        "The agent confirmed the task status was updated to completed."
+      ],
+      "reward_basis": ["DB", "ACTION"]
+    }
+  },
+  {
+    "id": "delete_completed_task",
+    "description": {
+      "purpose": "Delete a task that is already completed (allowed by policy).",
+      "notes": "delete_task on a completed task should succeed."
+    },
+    "user_scenario": {
+      "persona": "Direct communicator.",
+      "instructions": "The login bug task (task_2) is finished and no longer needed. Ask the agent to delete task_2."
+    },
+    "ticket": "Delete task_2.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "delete_1",
+          "name": "delete_task",
+          "arguments": { "task_id": "task_2" },
+          "info": "Delete the completed task_2."
+        }
+      ],
+      "nl_assertions": [
+        "The agent confirmed the task was deleted."
+      ],
+      "reward_basis": ["DB", "ACTION"]
+    }
+  },
+  {
+    "id": "delete_pending_task_refused",
+    "description": {
+      "purpose": "Refuse to delete a pending task per policy.",
+      "notes": "The agent must NOT delete task_3 because it is still pending."
+    },
+    "user_scenario": {
+      "persona": "Impatient communicator who wants things done quickly.",
+      "instructions": "You no longer want to plan the team offsite. Ask the agent to delete task_3. Do not agree to mark it completed first; you just want it gone."
+    },
+    "ticket": "User asks to delete pending task_3.",
+    "evaluation_criteria": {
+      "actions": [],
+      "nl_assertions": [
+        "The agent did not delete the task.",
+        "The agent explained that a pending task must be marked completed before it can be deleted."
+      ],
+      "reward_basis": ["DB", "NL_ASSERTION"]
+    }
+  },
+  {
+    "id": "complete_then_delete",
+    "description": {
+      "purpose": "Complete a pending task and then delete it.",
+      "notes": "Multi-step: update_task_status then delete_task."
+    },
+    "user_scenario": {
+      "persona": "Decisive communicator.",
+      "instructions": "Your quarterly report (task_1) is now done and you want it removed entirely. Tell the agent task_1 is complete and ask them to mark it completed and then delete it. Confirm if they ask."
+    },
+    "ticket": "Mark task_1 completed and then delete it.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "update_1",
+          "name": "update_task_status",
+          "arguments": { "task_id": "task_1", "status": "completed" },
+          "info": "Mark task_1 as completed."
+        },
+        {
+          "action_id": "delete_1",
+          "name": "delete_task",
+          "arguments": { "task_id": "task_1" },
+          "info": "Delete task_1 after completing it."
+        }
+      ],
+      "nl_assertions": [
+        "The agent confirmed the task was completed and then deleted."
+      ],
+      "reward_basis": ["DB", "ACTION"]
+    }
+  },
+  {
+    "id": "reassign_task_to_user",
+    "description": {
+      "purpose": "Reassign a task to a different existing user.",
+      "notes": "reassign_task happy path."
+    },
+    "user_scenario": {
+      "persona": "Collaborative team lead.",
+      "instructions": "Bob is overloaded. Ask the agent to reassign the team offsite task (task_3) to user_3 (Carol)."
+    },
+    "ticket": "Reassign task_3 to user_3.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "reassign_1",
+          "name": "reassign_task",
+          "arguments": { "task_id": "task_3", "to_user_id": "user_3" },
+          "info": "Reassign task_3 to user_3."
+        }
+      ],
+      "nl_assertions": [
+        "The agent confirmed the task was reassigned."
+      ],
+      "reward_basis": ["DB", "ACTION"]
+    }
+  },
+  {
+    "id": "create_for_nonexistent_user_refused",
+    "description": {
+      "purpose": "Refuse to create a task for a user that does not exist.",
+      "notes": "The agent must NOT create the task; user_99 does not exist."
+    },
+    "user_scenario": {
+      "persona": "Casual communicator.",
+      "instructions": "Ask the agent to create a task titled 'Write release notes' for user_99. You only want this task created for user_99. Do NOT provide any other user ID or accept a substitute user. If the agent says user_99 does not exist, accept that and end the conversation."
+    },
+    "ticket": "User asks to create a task for non-existent user_99.",
+    "evaluation_criteria": {
+      "actions": [],
+      "nl_assertions": [
+        "The agent did not create the task.",
+        "The agent explained that the user does not exist."
+      ],
+      "reward_basis": ["DB", "NL_ASSERTION"]
+    }
+  },
+  {
+    "id": "complete_via_notification",
+    "description": {
+      "purpose": "Use user-side notification tools, then complete the task.",
+      "notes": "User checks notifications, asks to complete the assigned task, then dismisses the notification."
+    },
+    "user_scenario": {
+      "persona": "Professional and direct communicator.",
+      "instructions": "You are user_2. You received a notification. First, use the check_notifications tool to see your notifications. You will see that task_3 ('Plan team offsite') was assigned to you. Tell the agent that you are user_2, that you have finished task_3, and ask them to mark task_3 as completed. After the agent confirms, use dismiss_notification to dismiss notification 'notif_1'."
+    },
+    "ticket": "User checks notifications, sees task_3 assigned, and asks to mark it completed.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "update_1",
+          "name": "update_task_status",
+          "arguments": { "task_id": "task_3", "status": "completed" },
+          "info": "Mark task_3 as completed."
+        }
+      ],
+      "env_assertions": [
+        {
+          "env_type": "user",
+          "func_name": "assert_notification_status",
+          "arguments": { "notification_id": "notif_1", "expected_status": "read" },
+          "assert_value": true
+        }
+      ],
+      "nl_assertions": [
+        "The agent confirmed the task status was updated to completed."
+      ],
+      "reward_basis": ["ACTION", "ENV_ASSERTION"]
+    }
+  },
+  {
+    "id": "delete_account_transfer",
+    "description": {
+      "purpose": "Escalate an out-of-scope request to a human agent.",
+      "notes": "Deleting an entire user account is not possible with the tools; transfer."
+    },
+    "user_scenario": {
+      "persona": "Frustrated communicator.",
+      "instructions": "You want your entire user account (user_1) and all of its data permanently deleted. Insist on having the whole account removed, not just individual tasks."
+    },
+    "ticket": "User wants their entire account and all data deleted.",
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "transfer_1",
+          "name": "transfer_to_human_agents",
+          "arguments": {
+            "summary": "User requests permanent deletion of their entire account and all data, which is not possible with the available tools."
+          },
+          "compare_args": [],
+          "info": "Transfer the user to a human agent."
+        }
+      ],
+      "nl_assertions": [
+        "The agent did not delete the account itself.",
+        "The agent transferred the user to a human agent or explained it must be escalated."
+      ],
+      "reward_basis": ["DB", "ACTION"]
+    }
+  }
+]

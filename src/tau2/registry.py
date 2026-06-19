@@ -30,6 +30,13 @@ from tau2.domains.banking_knowledge.environment import (
 )
 from tau2.domains.mock.environment import get_environment as mock_domain_get_environment
 from tau2.domains.mock.environment import get_tasks as mock_domain_get_tasks
+from tau2.domains.taskdesk.environment import (
+    get_environment as taskdesk_domain_get_environment,
+)
+from tau2.domains.taskdesk.environment import get_tasks as taskdesk_domain_get_tasks
+from tau2.domains.taskdesk.environment import (
+    get_tasks_split as taskdesk_domain_get_tasks_split,
+)
 from tau2.domains.retail.environment import (
     get_environment as retail_domain_get_environment,
 )
@@ -312,6 +319,13 @@ try:
     )
     registry.register_domain(mock_domain_get_environment, "mock")
     registry.register_tasks(mock_domain_get_tasks, "mock")
+
+    registry.register_domain(taskdesk_domain_get_environment, "taskdesk")
+    registry.register_tasks(
+        taskdesk_domain_get_tasks,
+        "taskdesk",
+        get_task_splits=taskdesk_domain_get_tasks_split,
+    )
 
     registry.register_domain(airline_domain_get_environment, "airline")
     registry.register_tasks(
